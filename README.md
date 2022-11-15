@@ -13,7 +13,7 @@ This repository contains :
 5) A file with the reference behaviors for the second order structure function, skewness and flatness: Train_TurbModane.npz
 
 # References
-Granero-Belinchon, C. **Stochastic Neural Network generation of 1-dimensional turbulent velocity fields**. Hal/ArXiv. 2022. <a href="link" > link </a>.
+Granero-Belinchon, C. **Neural network based generation of 1-dimensional stochastic fields with turbulent velocity statistics**. Hal/ArXiv. 2022. <a href="link" > link </a>.
 
 # Contact
 
