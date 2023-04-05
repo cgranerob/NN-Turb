@@ -239,6 +239,7 @@ generator = generator.apply(weights_init)
 
 # define loss and optimizers
 criterion = nn.MSELoss().to(dev)
+criterion2 = nn.KLDivLoss().to(dev)
 lr = 0.0002
 optim_g = optim.Adam(generator.parameters(),lr= lr, betas=(0.5, 0.999))
 
@@ -250,6 +251,7 @@ print("Model  ", next(generator.parameters()).is_cuda)
 alpha=1
 beta=1
 gamma=1
+lamda=0.1
 # Size of time series
 Nts=2**15
 
@@ -260,6 +262,7 @@ cout=torch.zeros((nb_epoch), device=dev)
 cout1=torch.zeros((nb_epoch), device=dev)
 cout2=torch.zeros((nb_epoch), device=dev)
 cout3=torch.zeros((nb_epoch), device=dev)
+cout4=torch.zeros((nb_epoch), device=dev)
 
 epoch = 0
 for i in progressbar.progressbar(range(nb_epoch)):
@@ -285,7 +288,8 @@ for i in progressbar.progressbar(range(nb_epoch)):
         loss1 = criterion(sgenerated[:,0,:], x[:,0,:])
         loss2 = criterion(sgenerated[:,1,:], x[:,1,:])
         loss3 = criterion(sgenerated[:,2,:], x[:,2,:])
-        loss= alpha*loss1 + beta*loss2 +gamma*loss3
+        loss4 = criterion((torch.cumsum(generated,dim=2)-torch.mean(torch.cumsum(generated,dim=2), dim=2, keepdim=True))/torch.std(torch.cumsum(generated,dim=2),dim=2, keepdim=True),z)
+        loss= alpha*loss1 + beta*loss2 +gamma*loss3 + lamda*loss4 
         loss.backward()
         optim_g.step()
         '''
@@ -294,10 +298,12 @@ for i in progressbar.progressbar(range(nb_epoch)):
         ll1=+loss1
         ll2=+loss2
         ll3=+loss3
+        ll4=+loss4
     cout[i]=ll/batches
     cout1[i]=ll1/batches
     cout2[i]=ll2/batches
     cout3[i]=ll3/batches
+    cout4[i]=ll4/batches
     if epoch%100 == 0:
         print('\nEpoch [{}/{}] -----------------------------------------------------------------------------'
             .format(epoch+1, nb_epoch))
@@ -314,5 +320,6 @@ cout = cout.cpu().detach().numpy()
 cout1 = cout1.cpu().detach().numpy()
 cout2 = cout2.cpu().detach().numpy()
 cout3 = cout3.cpu().detach().numpy()
+cout4 = cout4.cpu().detach().numpy()
 
-np.savez('Loss_NNTurb.npz',cout=cout,cout1=cout1,cout2=cout2,cout3=cout3)
+np.savez('Loss_NNTurb.npz',cout=cout,cout1=cout1,cout2=cout2,cout3=cout3,cout4=cout4)
