@@ -239,7 +239,6 @@ generator = generator.apply(weights_init)
 
 # define loss and optimizers
 criterion = nn.MSELoss().to(dev)
-criterion2 = nn.KLDivLoss().to(dev)
 lr = 0.0002
 optim_g = optim.Adam(generator.parameters(),lr= lr, betas=(0.5, 0.999))
 
