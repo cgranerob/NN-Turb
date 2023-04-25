@@ -57,7 +57,7 @@ from torch import nn
 from torch import optim
 import progressbar
 
-from analyseIncrsTorchcuda import analyseIncrsTorchcuda
+from analyseIncrsTorchcuda import analyseIncrsTorchcuda_vp
 
 cuda = True if torch.cuda.is_available() else False
 dev = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -239,6 +239,7 @@ generator = generator.apply(weights_init)
 
 # define loss and optimizers
 criterion = nn.MSELoss().to(dev)
+criterion2 = nn.KLDivLoss().to(dev)
 lr = 0.0002
 optim_g = optim.Adam(generator.parameters(),lr= lr, betas=(0.5, 0.999))
 
@@ -282,7 +283,7 @@ for i in progressbar.progressbar(range(nb_epoch)):
         generated = generator(z)
         
         # Estimation of structure functions    
-        sgenerated=analyseIncrsTorchcuda(torch.cumsum(generated,dim=2),scales, dev).to(dev)
+        sgenerated=analyseIncrsTorchcuda_vp(torch.cumsum(generated,dim=2),scales, dev).to(dev)
 
         loss1 = criterion(sgenerated[:,0,:], x[:,0,:])
         loss2 = criterion(sgenerated[:,1,:], x[:,1,:])
