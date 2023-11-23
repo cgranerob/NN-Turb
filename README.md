@@ -3,7 +3,7 @@ Neural network stochastic model generating 1-dimensional fields with turbulent v
 
 We define and study a fully-convolutional neural network stochastic model, NN-Turb, which generates 1-dimensional fields with turbulent velocity statistics. Thus, the generated process satisfies the Kolmogorov 2/3 law for second order structure function. It also presents negative skewness across scales (i.e. Kolmogorov 4/5 law) and exhibits intermittency. Furthermore, our model is never in contact with turbulent data and only needs the desired statistical behavior of the structure functions across scales for training.
 
-# Contents of Thunmpy package
+# Contents of NN-Turb package
 This repository contains :
 
 1) The Neural network stochastic NN-Turb model: NN-Turb.pt file.
